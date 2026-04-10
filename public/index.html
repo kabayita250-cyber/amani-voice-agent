@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amani — Voice AI · Tom Tour Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--lake-deep:#04111f;--lake-blue:#0a5f8a;--lake-bright:#1a9dd9;--lake-glow:#4fc3f7;--gold:#c9a84c;--gold-light:#e8c97a;--white:#f0f8ff;--muted:rgba(240,248,255,0.55);--font-display:'Cormorant Garamond',serif;--font-body:'DM Sans',sans-serif}
+    html,body{height:100%;background:var(--lake-deep);color:var(--white);font-family:var(--font-body);overflow:hidden}
+    .scene{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,#0a3a5c 0%,#04111f 65%);overflow:hidden}
+    .stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 15% 12%,rgba(255,255,255,0.6) 0%,transparent 100%),radial-gradient(1px 1px at 72% 8%,rgba(255,255,255,0.5) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 40% 5%,rgba(255,255,255,0.7) 0%,transparent 100%),radial-gradient(1px 1px at 88% 18%,rgba(255,255,255,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 60% 15%,rgba(255,255,255,0.5) 0%,transparent 100%)}
+    .mountains{position:absolute;bottom:38%;left:0;right:0;height:200px}
+    .mountain{position:absolute;bottom:0;clip-path:polygon(50% 0%,0% 100%,100% 100%)}
+    .m1{left:-5%;width:35%;height:180px;background:linear-gradient(180deg,#0d2a40,#071a2b)}
+    .m2{left:15%;width:28%;height:140px;background:linear-gradient(180deg,#112f45,#081d2e);opacity:.8}
+    .m3{right:-5%;width:38%;height:190px;background:linear-gradient(180deg,#0d2a40,#071a2b)}
+    .m4{right:18%;width:30%;height:150px;background:linear-gradient(180deg,#112f45,#081d2e);opacity:.8}
+    .m5{left:38%;width:26%;height:120px;background:linear-gradient(180deg,#163548,#091e2f)}
+    .lake{position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(180deg,#062038 0%,#041525 60%,#020d18 100%);overflow:hidden}
+    .lake::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--lake-bright),transparent);opacity:.4}
+    .ripple{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(26,157,217,.15) 30%,rgba(79,195,247,.25) 50%,rgba(26,157,217,.15) 70%,transparent 90%);animation:ripple-move 4s ease-in-out infinite}
+    .ripple:nth-child(2){top:15%}.ripple:nth-child(3){top:30%;animation-delay:.8s}.ripple:nth-child(4){top:48%;animation-delay:1.6s}.ripple:nth-child(5){top:65%;animation-delay:2.4s}.ripple:nth-child(6){top:80%;animation-delay:3.2s}
+    @keyframes ripple-move{0%,100%{transform:scaleX(.8) translateX(-2%);opacity:.4}50%{transform:scaleX(1.1) translateX(2%);opacity:.8}}
+    .container{position:relative;z-index:10;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+    .brand{text-align:center;margin-bottom:28px;animation:fade-down .8s ease both}
+    .brand-name{font-family:var(--font-display);font-size:14px;font-weight:300;letter-spacing:4px;color:var(--gold);text-transform:uppercase}
+    .brand-sub{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:3px}
+    .orb-section{display:flex;flex-direction:column;align-items:center;gap:24px;margin-bottom:28px}
+    .orb-wrap{position:relative;width:170px;height:170px;cursor:pointer}
+    .ring{position:absolute;border-radius:50%;border:1px solid rgba(79,195,247,.15);top:50%;left:50%;transform:translate(-50%,-50%);animation:ring-pulse 3s ease-in-out infinite}
+    .ring-1{width:210px;height:210px}.ring-2{width:250px;height:250px;animation-delay:.5s;border-color:rgba(79,195,247,.08)}.ring-3{width:290px;height:290px;animation-delay:1s;border-color:rgba(79,195,247,.04)}
+    @keyframes ring-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.05);opacity:.6}}
+    .orb{width:170px;height:170px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#1a9dd9 0%,#0a5f8a 45%,#062a45 100%);box-shadow:0 0 40px rgba(26,157,217,.3),0 0 80px rgba(26,157,217,.1),inset 0 0 40px rgba(4,17,31,.4);display:flex;align-items:center;justify-content:center;transition:all .3s ease;position:relative;overflow:hidden}
+    .orb::before{content:'';position:absolute;top:12%;left:18%;width:35%;height:25%;background:radial-gradient(ellipse,rgba(255,255,255,.2) 0%,transparent 100%);border-radius:50%}
+    .orb-inner{font-size:48px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
+    .orb-wrap:hover .orb{box-shadow:0 0 60px rgba(26,157,217,.5),0 0 120px rgba(26,157,217,.2);transform:scale(1.03)}
+    .orb-wrap.listening .orb{background:radial-gradient(circle at 35% 35%,#4fc3f7 0%,#1a9dd9 40%,#0a5f8a 100%);box-shadow:0 0 60px rgba(79,195,247,.6),0 0 120px rgba(79,195,247,.2);animation:orb-listen 1s ease-in-out infinite alternate}
+    @keyframes orb-listen{from{transform:scale(1)}to{transform:scale(1.06)}}
+    .orb-wrap.speaking .orb{background:radial-gradient(circle at 35% 35%,#e8c97a 0%,#c9a84c 40%,#8a6a1a 100%);box-shadow:0 0 60px rgba(201,168,76,.6),0 0 120px rgba(201,168,76,.2);animation:orb-speak .5s ease-in-out infinite alternate}
+    @keyframes orb-speak{from{transform:scale(1)}to{transform:scale(1.04)}}
+    .orb-wrap.processing .orb{animation:orb-process 1.5s linear infinite}
+    @keyframes orb-process{0%,100%{filter:brightness(1)}50%{filter:brightness(1.4)}}
+    .wave-bars{display:flex;align-items:center;gap:3px;height:28px}
+    .bar{width:3px;background:var(--lake-glow);border-radius:2px;height:4px;transition:height .1s}
+    .agent-name{font-family:var(--font-display);font-size:clamp(34px,7vw,50px);font-weight:300;letter-spacing:2px;text-align:center;color:var(--white);line-height:1;animation:fade-up .8s .2s ease both}
+    .agent-title{font-family:var(--font-display);font-style:italic;font-size:clamp(13px,2.5vw,17px);font-weight:300;color:var(--gold);text-align:center;margin-top:4px;animation:fade-up .8s .35s ease both}
+    .status-label{font-size:12px;font-weight:300;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center;min-height:18px;transition:color .3s;margin-top:14px}
+    .status-label.listening{color:var(--lake-glow)}.status-label.speaking{color:var(--gold-light)}.status-label.processing{color:var(--lake-bright)}
+    .transcript-box{width:100%;max-width:480px;min-height:58px;max-height:100px;background:rgba(6,42,69,.5);border:1px solid rgba(79,195,247,.12);border-radius:16px;padding:13px 18px;font-size:13px;font-weight:300;line-height:1.6;color:var(--white);text-align:center;display:flex;align-items:center;justify-content:center;overflow-y:auto;backdrop-filter:blur(12px);transition:all .3s ease;margin-top:14px;animation:fade-up .8s .5s ease both}
+    .transcript-box.empty::before{content:'Tap the orb and speak';color:var(--muted);font-style:italic}
+    .transcript-box.bot-msg{border-color:rgba(201,168,76,.25);color:var(--gold-light)}
+    .transcript-box.user-msg{border-color:rgba(79,195,247,.3)}
+    .controls{display:flex;align-items:center;gap:14px;margin-top:18px;animation:fade-up .8s .6s ease both}
+    .btn-speak{display:flex;align-items:center;gap:8px;padding:13px 30px;border-radius:50px;border:none;cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;letter-spacing:1px;background:linear-gradient(135deg,var(--lake-bright),var(--lake-blue));color:white;box-shadow:0 8px 24px rgba(26,157,217,.35);transition:all .25s ease}
+    .btn-speak:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(26,157,217,.5)}
+    .btn-speak.recording{background:linear-gradient(135deg,#ef4444,#b91c1c);box-shadow:0 8px 24px rgba(239,68,68,.4);animation:btn-pulse 1.5s ease-in-out infinite}
+    @keyframes btn-pulse{0%,100%{box-shadow:0 8px 24px rgba(239,68,68,.4)}50%{box-shadow:0 8px 40px rgba(239,68,68,.7)}}
+    .btn-stop{padding:12px;border-radius:50%;width:44px;height:44px;border:1px solid rgba(79,195,247,.25);background:rgba(6,42,69,.6);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(8px)}
+    .btn-stop:hover{border-color:rgba(239,68,68,.5);color:#ef4444}
+    .whatsapp-cta{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:50px;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.25);color:#4ade80;font-size:12px;font-weight:500;text-decoration:none;transition:all .2s;margin-top:14px;animation:fade-up .8s .7s ease both}
+    .whatsapp-cta:hover{background:rgba(37,211,102,.2)}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(239,68,68,.9);color:white;padding:11px 22px;border-radius:50px;font-size:13px;transition:transform .3s ease;z-index:100;white-space:nowrap}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+    @keyframes fade-down{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  </style>
+</head>
+<body>
+<div class="scene">
+  <div class="stars"></div>
+  <div class="mountains">
+    <div class="mountain m1"></div><div class="mountain m2"></div>
+    <div class="mountain m3"></div><div class="mountain m4"></div><div class="mountain m5"></div>
+  </div>
+  <div class="lake">
+    <div class="ripple"></div><div class="ripple"></div><div class="ripple"></div>
+    <div class="ripple"></div><div class="ripple"></div>
+  </div>
+</div>
+<div class="container">
+  <div class="brand">
+    <div class="brand-name">Tom Tour Guide</div>
+    <div class="brand-sub">Lake Kivu Adventures · Rwanda</div>
+  </div>
+  <div class="orb-section">
+    <div class="orb-wrap" id="orbWrap" onclick="handleOrbClick()">
+      <div class="ring ring-1"></div><div class="ring ring-2"></div><div class="ring ring-3"></div>
+      <div class="orb"><div class="orb-inner" id="orbIcon">⛵</div></div>
+    </div>
+    <div class="wave-bars" id="waveBars">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    </div>
+  </div>
+  <div class="agent-name">Amani</div>
+  <div class="agent-title">Your AI Voice Receptionist</div>
+  <div class="status-label" id="statusLabel">Tap the orb to start</div>
+  <div class="transcript-box empty" id="transcriptBox"></div>
+  <div class="controls">
+    <button class="btn-speak" id="speakBtn" onclick="handleOrbClick()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 19v4M8 23h8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <span id="speakBtnText">Speak to Amani</span>
+    </button>
+    <button class="btn-stop" onclick="stopSpeaking()" title="Stop">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+    </button>
+  </div>
+  <a href="https://wa.me/250791750041?text=Hi%20Tom!%20I%20spoke%20with%20Amani%20and%20I%27d%20like%20to%20book%20a%20tour." target="_blank" class="whatsapp-cta">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Book directly on WhatsApp
+  </a>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const conversation=[];
+let recognition=null,currentUtterance=null,state='idle';
+const orbWrap=document.getElementById('orbWrap');
+const orbIcon=document.getElementById('orbIcon');
+const statusLabel=document.getElementById('statusLabel');
+const transcriptBox=document.getElementById('transcriptBox');
+const speakBtn=document.getElementById('speakBtn');
+const speakBtnText=document.getElementById('speakBtnText');
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){
+  recognition=new SR();
+  recognition.continuous=false;
+  recognition.interimResults=true;
+  recognition.lang='en-US';
+  recognition.onstart=()=>setState('listening');
+  recognition.onresult=(e)=>{
+    let interim='',final='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      e.results[i].isFinal?final+=t:interim+=t;
+    }
+    setTranscript(final||interim,'user-msg');
+    if(final){recognition.stop();sendToAmani(final.trim());}
+  };
+  recognition.onerror=(e)=>{if(e.error!=='aborted'){setState('idle');showToast(e.error==='no-speech'?'No speech detected. Try again.':'Mic error: '+e.error);}};
+  recognition.onend=()=>{if(state==='listening')setState('idle');};
+}
+function setState(s){
+  state=s;
+  orbWrap.className='orb-wrap '+(s!=='idle'?s:'');
+  orbIcon.textContent={idle:'⛵',listening:'🎙️',processing:'⏳',speaking:'🌊'}[s]||'⛵';
+  statusLabel.textContent={idle:'Tap the orb to start',listening:'Listening...',processing:'Thinking...',speaking:'Amani is speaking...'}[s];
+  statusLabel.className='status-label '+s;
+  speakBtnText.textContent={idle:'Speak to Amani',listening:'Stop listening',processing:'Processing...',speaking:'Interrupt'}[s];
+  s==='listening'?speakBtn.classList.add('recording'):speakBtn.classList.remove('recording');
+  animateBars();
+}
+function setTranscript(text,cls){
+  transcriptBox.textContent=text;
+  transcriptBox.className='transcript-box '+(text?cls:'empty');
+}
+function handleOrbClick(){
+  if(!SR){showToast('Please use Chrome browser');return;}
+  if(state==='listening'){recognition.stop();setState('idle');}
+  else if(state==='speaking'){stopSpeaking();}
+  else if(state==='idle'){if(currentUtterance)window.speechSynthesis.cancel();try{recognition.start();}catch(e){}}
+}
+function stopSpeaking(){window.speechSynthesis.cancel();setState('idle');}
+async function sendToAmani(text){
+  if(!text)return;
+  setState('processing');
+  conversation.push({role:'user',parts:[{text}]});
+  try{
+    const res=await fetch('/.netlify/functions/voice-chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:conversation})
+    });
+    const data=await res.json();
+    const reply=data.reply||"Sorry, I had an issue. Please WhatsApp Tom at +250 791 750 041!";
+    conversation.push({role:'model',parts:[{text:reply}]});
+    setTranscript(reply,'bot-msg');
+    speakReply(reply);
+  }catch(err){setState('idle');showToast('Connection issue. Try again.');}
+}
+function speakReply(text){
+  if(!window.speechSynthesis){setState('idle');return;}
+  window.speechSynthesis.cancel();
+  setState('speaking');
+  const clean=text.replace(/[\u{1F300}-\u{1FFFF}]/gu,'');
+  const utt=new SpeechSynthesisUtterance(clean);
+  utt.rate=0.95;utt.pitch=1.05;utt.volume=1;
+  const voices=window.speechSynthesis.getVoices();
+  const v=voices.find(v=>v.name.includes('Samantha')||v.name.includes('Karen')||v.name.includes('Google UK English Female')||v.name.includes('Microsoft Zira'))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+  if(v)utt.voice=v;
+  utt.onend=()=>{setState('idle');currentUtterance=null;};
+  utt.onerror=()=>{setState('idle');currentUtterance=null;};
+  currentUtterance=utt;
+  window.speechSynthesis.speak(utt);
+}
+function animateBars(){
+  const bars=document.querySelectorAll('.bar');
+  if(state==='listening'||state==='speaking'){
+    bars.forEach(b=>{b.style.height=(4+Math.random()*20)+'px';});
+    setTimeout(animateBars,120);
+  }else{bars.forEach(b=>b.style.height='4px');}
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+window.speechSynthesis.getVoices();
+</script>
+</body>
+</html>
